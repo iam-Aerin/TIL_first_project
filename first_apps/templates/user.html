@@ -1,0 +1,62 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 테스트</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        function updateTime() {
+            let now = new Date();
+            let timeString = now.toLocaleString('ko-KR');
+            document.getElementById("current-time").innerText = timeString;
+        }
+        setInterval(updateTime, 1000);
+
+        // ✅ 뒤로 가기 버튼 동작 (첫 화면으로 리셋)
+        function goBack() {
+            window.location.href = "/";
+        }
+    </script>
+</head>
+<body class="d-flex flex-column align-items-center justify-content-center vh-100 bg-light">
+    <div class="container text-center">
+        <h1 class="mb-4">나의 능력 테스트</h1>
+
+        {% if not name %}
+            <!-- ✅ 첫 화면: 이름 입력 폼 -->
+            <form method="POST" class="mb-4">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <input type="text" name="name" class="form-control" placeholder="이름을 입력하세요" required>
+                    <button class="btn btn-primary" type="submit">결과 확인</button>
+                </div>
+            </form>
+        {% else %}
+            <!-- ✅ 결과 화면 -->
+            <h2 class="mb-3">{{ name }}님의 능력 3가지!</h2>
+            <ul class="list-group mb-3">
+                {% for ability in abilities %}
+                    <li class="list-group-item">{{ ability }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3 class="mb-3">(찡끗------★)</h3>
+            <div class="row justify-content-center">
+                {% for image in images %}
+                    <div class="col-md-4 mb-3">
+                        <img src="{{ image }}" alt="랜덤 이미지" class="img-fluid rounded shadow">
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- ✅ 뒤로 가기 버튼 -->
+            <button onclick="goBack()" class="btn btn-secondary mt-4">다시 하기</button>
+        {% endif %}
+
+        <p id="current-time" class="mt-4 fs-5 fw-bold">{{ current_time }}</p>
+    </div>
+</body>
+</html>
